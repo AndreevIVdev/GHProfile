@@ -19,6 +19,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = GPTabBarController()
         window?.makeKeyAndVisible()
+        UINavigationBar.appearance().tintColor = .systemGreen
+        UINavigationBar.appearance().backgroundColor = .systemBackground
+        UITabBar.appearance().tintColor = .systemGreen
+        UITabBar.appearance().backgroundColor = .systemBackground
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}

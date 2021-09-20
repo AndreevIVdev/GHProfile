@@ -153,7 +153,7 @@ extension ProfileViewController: GPReposItemViewControllerDelegate {
             presentGPAlertOnMainTread(title: "Invalid URL", message: "The url attached to this user is invalid!", buttonTitle: "Ok")
             return
         }
-        presentSafariVC(with: url)
+        presentSafariViewController(with: url)
     }
 }
 

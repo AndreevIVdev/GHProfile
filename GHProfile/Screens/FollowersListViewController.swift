@@ -11,16 +11,16 @@ class FollowersListViewController: GPDataLoadingViewController {
     
     enum Section { case main }
     
-    var user: User!
-    var followers: [Follower] = []
-    var filteredFollowers: [Follower] = []
-    var page: Int = 1
-    var hasMoreFollowers = true
-    var isSearching = false
-    var isLoadingMoreFollowers = false
+    private var user: User!
+    private var followers: [Follower] = []
+    private var filteredFollowers: [Follower] = []
+    private var page: Int = 1
+    private var hasMoreFollowers = true
+    private var isSearching = false
+    private var isLoadingMoreFollowers = false
     
-    var collectionView: UICollectionView!
-    var dataSource: UICollectionViewDiffableDataSource<Section, Follower>!
+    private var collectionView: UICollectionView!
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Follower>!
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -46,8 +46,7 @@ class FollowersListViewController: GPDataLoadingViewController {
         getFollowers(username: user.login, page: page)
     }
     
-    
-    func getFollowers(username: String, page: Int) {
+    private func getFollowers(username: String, page: Int) {
         showLoadingView()
         isLoadingMoreFollowers = true
         
@@ -74,8 +73,7 @@ class FollowersListViewController: GPDataLoadingViewController {
         }
     }
     
-    
-    func configureSearchController () {
+    private func configureSearchController () {
         let searchController = UISearchController()
         searchController.searchResultsUpdater = self
         searchController.searchBar.placeholder = "Search for a username"
@@ -83,14 +81,12 @@ class FollowersListViewController: GPDataLoadingViewController {
         navigationItem.searchController = searchController
     }
     
-    
-    func configureViewController() {
+    private func configureViewController() {
         view.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
-    
-    func configureCollectionView() {
+    private func configureCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UIHelper.createThreeColumnFlowLayout(in: view))
         view.addSubViews(collectionView)
         collectionView.backgroundColor = .systemBackground
@@ -98,8 +94,7 @@ class FollowersListViewController: GPDataLoadingViewController {
         collectionView.delegate = self
     }
     
-    
-    func configureDataSource() {
+    private func configureDataSource() {
         dataSource = UICollectionViewDiffableDataSource<Section, Follower>(collectionView: collectionView, cellProvider: { collectionView, indexPath, follower in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Cells.GPCollectionViewCellReuseID, for: indexPath) as! GPCollectionViewCell
             cell.set(follower: follower)
@@ -107,8 +102,7 @@ class FollowersListViewController: GPDataLoadingViewController {
         })
     }
     
-    
-    func updateData(on followers: [Follower]) {
+    private func updateData(on followers: [Follower]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Follower>()
         snapshot.appendSections([.main])
         snapshot.appendItems(followers)
@@ -117,13 +111,12 @@ class FollowersListViewController: GPDataLoadingViewController {
         }
     }
     
-    @objc func dismissViewController() {
+    @objc private func dismissViewController() {
         navigationController?.popViewController(animated: true)
-        //self.dismiss(animated: true, completion: nil)
     }
 }
 
-extension FollowersListViewController: UICollectionViewDelegate {
+extension FollowersListViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let offsetY = scrollView.contentOffset.y
@@ -136,7 +129,9 @@ extension FollowersListViewController: UICollectionViewDelegate {
             getFollowers(username: user.login, page: page)
         }
     }
+}
     
+extension FollowersListViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let activeArray = isSearching ? filteredFollowers : followers

@@ -11,8 +11,6 @@ class GPTabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        UITabBar.appearance().tintColor = .darkGreen
-        UITabBar.appearance().barTintColor = .systemBackground
         
         let searchViewController = SearchViewController()
         let favoritesViewController = FavoritesListViewController()
