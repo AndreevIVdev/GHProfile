@@ -44,5 +44,22 @@ class GPTableViewCell: UITableViewCell {
             usernameLabel.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
+    
+    func getSnapshot(inputView: UIView) -> UIView? {
+        defer {
+            UIGraphicsEndImageContext()
+        }
+        UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, false, 0.0)
+        guard let currentContext = UIGraphicsGetCurrentContext() else { return nil }
+        inputView.layer.render(in: currentContext)
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
+        let cellSnapshot = UIImageView(image: image)
+        cellSnapshot.layer.masksToBounds = false
+        cellSnapshot.layer.cornerRadius = 0.0
+        cellSnapshot.layer.shadowOffset = CGSize(width: -5.0, height: 0.0)
+        cellSnapshot.layer.shadowRadius = 5.0
+        cellSnapshot.layer.shadowOpacity = 0.4
+        return cellSnapshot
+    }
 }
 

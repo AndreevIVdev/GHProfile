@@ -13,10 +13,13 @@ class FavoritesListViewController: GPDataLoadingViewController {
     private let emptyStateView = GPEmptyStateView(message: "No favorites")
     private var favorites: [Follower] = []
     
+    private var dragInitialIndexPath: IndexPath?
+    private var dragCellSnapshot: UIView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.addSubViews(tableView)
+        view.addSubViews(tableView, emptyStateView)
         configureViewController()
         configureEmptyStateView()
         configureTableView()
@@ -27,27 +30,30 @@ class FavoritesListViewController: GPDataLoadingViewController {
         getFavorites()
     }
     
-    func configureViewController() {
+    private func configureViewController() {
         view.backgroundColor = .systemBackground
         title = "Favorites"
         navigationController?.navigationBar.prefersLargeTitles = false
     }
     
-    func configureTableView() {
-        tableView.frame = view.bounds
+    private func configureTableView() {
+        tableView.pinToEdges(of: view)
         tableView.rowHeight = 80
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(GPTableViewCell.self, forCellReuseIdentifier: Cells.GPTableViewCellReuseID)
         tableView.removeExcessCells()
+        tableView.addGestureRecognizer(UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(handleLongPressGesture)
+        ))
     }
     
-    func configureEmptyStateView() {
-        view.addSubViews(emptyStateView)
+    private func configureEmptyStateView() {
         emptyStateView.pinToEdges(of: view)
     }
     
-    func getFavorites() {
+    private func getFavorites() {
         PersistanceManager.retrieveFavorites { [weak self] result in
             guard let self = self else { return }
             
@@ -70,6 +76,77 @@ class FavoritesListViewController: GPDataLoadingViewController {
                 self.presentGPAlertOnMainTread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
             }
             
+        }
+    }
+}
+
+extension FavoritesListViewController {
+    
+    @objc private func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+        let gestureLocation = gesture.location(in: tableView)
+        
+        switch gesture.state {
+        case .began:
+            guard let indexPath = tableView.indexPathForRow(at: gestureLocation) else { return }
+            let cell = tableView.cellForRow(at: indexPath) as! GPTableViewCell
+            dragCellSnapshot = cell.getSnapshot(inputView: cell)
+            guard dragCellSnapshot != nil else { return }
+            dragInitialIndexPath = indexPath
+            var center = cell.center
+            dragCellSnapshot!.center = center
+            dragCellSnapshot!.alpha = 0.0
+            tableView.addSubview(dragCellSnapshot!)
+            
+            UIView.animate(withDuration: 0.25,
+                           animations: {
+                            center.y = gestureLocation.y
+                            self.dragCellSnapshot?.center = center
+                            self.dragCellSnapshot?.transform = (self.dragCellSnapshot?.transform.scaledBy(x: 1.05, y: 1.05))!
+                            self.dragCellSnapshot?.alpha = 0.99
+                            cell.alpha = 0.0
+                           },
+                           completion: { (finished) in
+                            if finished {
+                                cell.isHidden = true
+                            }
+                           })
+            
+        case .changed:
+            guard let indexPath = tableView.indexPathForRow(at: gestureLocation) else { return }
+            guard dragInitialIndexPath != nil,
+                  dragCellSnapshot != nil else { return }
+            
+            var center = dragCellSnapshot!.center
+            center.y = gestureLocation.y
+            dragCellSnapshot!.center = center
+            if indexPath != dragInitialIndexPath {
+                // update your data model
+                let favoriteToMove = favorites.remove(at: dragInitialIndexPath!.row)
+                favorites.insert(favoriteToMove, at: indexPath.row)
+                tableView.moveRow(at: dragInitialIndexPath!, to: indexPath)
+                dragInitialIndexPath = indexPath
+            }
+            
+        case .ended where dragInitialIndexPath != nil:
+            guard let cell = tableView.cellForRow(at: dragInitialIndexPath!) else { return }
+            cell.isHidden = false
+            cell.alpha = 0.0
+            UIView.animate(withDuration: 0.25,
+                           animations: {
+                            self.dragCellSnapshot?.center = cell.center
+                            self.dragCellSnapshot?.transform = CGAffineTransform.identity
+                            self.dragCellSnapshot?.alpha = 0.0
+                            cell.alpha = 1.0
+                           },
+                           completion: { finished in
+                            if finished {
+                                self.dragInitialIndexPath = nil
+                                self.dragCellSnapshot?.removeFromSuperview()
+                                self.dragCellSnapshot = nil
+                            }
+            })
+            
+        default: return
         }
     }
 }
@@ -97,10 +174,7 @@ extension FavoritesListViewController: UITableViewDelegate, UITableViewDataSourc
             switch result {
             case .success(let user):
                 DispatchQueue.main.async {
-                    self.tabBarController?.selectedIndex = 0
-                    let navigationController = self.tabBarController?.viewControllers?[0] as! GPNavigationViewController
-                    navigationController.popViewController(animated: false)
-                    navigationController.pushViewController(ProfileViewController(user: user), animated: false)
+                    self.navigationController?.pushViewController(ProfileViewController(user: user), animated: false)
                 }
             case .failure(let error):
                 self.presentGPAlertOnMainTread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
@@ -112,7 +186,7 @@ extension FavoritesListViewController: UITableViewDelegate, UITableViewDataSourc
         guard editingStyle == .delete else {
             return
         }
-
+        
         PersistanceManager.updateWith(favorite: favorites[indexPath.row], actionType: .remove) { [weak self] error in
             guard let self = self else { return }
             guard let error = error else {
