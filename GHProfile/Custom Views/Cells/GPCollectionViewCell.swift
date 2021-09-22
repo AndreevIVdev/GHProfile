@@ -27,7 +27,7 @@ class GPCollectionViewCell: UICollectionViewCell {
     }
     
     private func configure() {
-        addSubViews(avatarImageView, usernameLabel)
+        contentView.addSubViews(avatarImageView, usernameLabel)
         
         let padding: CGFloat = 8
         

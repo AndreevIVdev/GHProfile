@@ -7,9 +7,11 @@
 
 import UIKit
 
+
+
 class FollowersListViewController: GPDataLoadingViewController {
     
-    enum Section { case main }
+    enum Section: Hashable { case main }
     
     private var user: User!
     private var followers: [Follower] = []
@@ -38,12 +40,12 @@ class FollowersListViewController: GPDataLoadingViewController {
         configureCollectionView()
         configureDataSource()
         configureSearchController()
+        getFollowers(username: user.login, page: page)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: true)
-        getFollowers(username: user.login, page: page)
     }
     
     private func getFollowers(username: String, page: Int) {
@@ -55,7 +57,9 @@ class FollowersListViewController: GPDataLoadingViewController {
             self.dismissLoadingView()
             switch result {
             case .success(let followers):
-                if followers.count < 100 { self.hasMoreFollowers = false }
+                if followers.count < 100 {
+                    self.hasMoreFollowers = false
+                }
                 self.followers += followers
                 
                 DispatchQueue.main.async {
