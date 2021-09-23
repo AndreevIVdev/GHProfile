@@ -22,20 +22,22 @@ class GPAvatarImageView: UIImageView {
         NetworkManager.shared.downloadImage(from: urlString) { [weak self] image in
             guard let self = self,
                   let image = image
-            else {
-                return
-            }
+            else { return }
             DispatchQueue.main.async {
                 self.image = image
             }
         }
     }
     
+    func setDefaultImage() {
+        image = Images.placeholder
+    }
+    
     private func configure() {
         layer.cornerRadius = 10
         clipsToBounds = true
-        image = Images.placeholder
         translatesAutoresizingMaskIntoConstraints = false
+        setDefaultImage()
     }
 }
 

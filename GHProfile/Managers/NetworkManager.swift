@@ -19,29 +19,29 @@ class NetworkManager {
     
     func getFollowers(for username: String, page: Int, completed: @escaping (Result<[Follower], GPError>) -> Void) {
         let endpoint = baseURL + "\(username)/followers?per_page=100&page=\(page)"
-
+        
         guard let url = URL(string: endpoint) else {
             completed(.failure(.invalidUsername))
             return
         }
-
+        
         URLSession.shared.dataTask(with: url) { data, response, error in
             
             if let _ = error {
                 completed(.failure(.unableToComplete))
             }
-
+            
             guard let response = response as? HTTPURLResponse,
                   response.statusCode == 200 else{
-                completed(.failure(.invalidResponse))
-                return
-            }
-
+                      completed(.failure(.invalidResponse))
+                      return
+                  }
+            
             guard let data = data else {
                 completed(.failure(.invalidData))
                 return
             }
-
+            
             do {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -59,7 +59,7 @@ class NetworkManager {
             completed(.failure(.invalidUsername))
             return
         }
-
+        
         URLSession.shared.dataTask(with: url) { data, response, error in
             
             if let _ = error {
@@ -68,9 +68,9 @@ class NetworkManager {
             
             guard let response = response as? HTTPURLResponse,
                   response.statusCode == 200 else{
-                completed(.failure(.invalidResponse))
-                return
-            }
+                      completed(.failure(.invalidResponse))
+                      return
+                  }
             
             guard let data = data else {
                 completed(.failure(.invalidData))
@@ -96,18 +96,18 @@ class NetworkManager {
             completed(image)
             return
         }
-
+        
         guard let url = URL(string: urlString) else {
             return
         }
-
+        
         URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
             guard let self = self,
                   error == nil,
                   let response = response as? HTTPURLResponse, response.statusCode == 200,
                   let data = data,
                   let image = UIImage(data: data)
-                  else {
+            else {
                 completed(nil)
                 return
             }

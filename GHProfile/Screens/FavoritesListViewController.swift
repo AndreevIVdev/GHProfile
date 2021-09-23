@@ -75,7 +75,6 @@ class FavoritesListViewController: GPDataLoadingViewController {
             case .failure(let error):
                 self.presentGPAlertOnMainTread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
             }
-            
         }
     }
 }
@@ -166,9 +165,7 @@ extension FavoritesListViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         showLoadingView()
         NetworkManager.shared.getUser(for: favorites[indexPath.row].login) { [weak self] result in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             
             self.dismissLoadingView()
             switch result {
@@ -183,9 +180,7 @@ extension FavoritesListViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        guard editingStyle == .delete else {
-            return
-        }
+        guard editingStyle == .delete else { return }
         
         PersistanceManager.updateWith(favorite: favorites[indexPath.row], actionType: .remove) { [weak self] error in
             guard let self = self else { return }

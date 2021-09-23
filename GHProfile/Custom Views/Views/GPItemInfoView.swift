@@ -13,9 +13,9 @@ enum ItemInfoType {
 
 class GPItemInfoView: UIView {
     
-    let symbolImageView = UIImageView()
-    let titleLabel = GPTitleLabel(textAlignment: .left, fontSize: 14)
-    let countLabel = GPTitleLabel(textAlignment: .center, fontSize: 14)
+    private let symbolImageView = UIImageView()
+    private let titleLabel = GPTitleLabel(textAlignment: .left, fontSize: 14)
+    private let countLabel = GPTitleLabel(textAlignment: .center, fontSize: 14)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

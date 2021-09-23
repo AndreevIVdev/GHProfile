@@ -45,7 +45,8 @@ class FollowersListViewController: GPDataLoadingViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     private func getFollowers(username: String, page: Int) {
@@ -87,7 +88,6 @@ class FollowersListViewController: GPDataLoadingViewController {
     
     private func configureViewController() {
         view.backgroundColor = .systemBackground
-        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     private func configureCollectionView() {
@@ -138,17 +138,15 @@ extension FollowersListViewController: UIScrollViewDelegate {
 extension FollowersListViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let activeArray = isSearching ? filteredFollowers : followers
-        let follower = activeArray[indexPath.item]
+        guard let follower = dataSource.itemIdentifier(for: indexPath) else { return }
         showLoadingView()
         NetworkManager.shared.getUser(for: follower.login) { [weak self] result in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             self.dismissLoadingView()
             switch result {
             case .success(let user):
                 DispatchQueue.main.async {
+                    self.navigationController?.setNavigationBarHidden(true, animated: true)
                     self.navigationController?.pushViewController(ProfileViewController(user: user), animated: true)
                 }
             case .failure(let error):

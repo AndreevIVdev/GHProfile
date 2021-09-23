@@ -38,7 +38,7 @@ class ProfileViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.setNavigationBarHidden(false, animated: false)
         navigationController?.navigationBar.prefersLargeTitles = false
         configureFavoriteMethod()
         setRightBarButtonItem()
@@ -47,6 +47,7 @@ class ProfileViewController: UIViewController {
     private func configureViewController() {
         view.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.setNavigationBarHidden(false, animated: false)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: .checkmark, style: .plain, target: self, action: #selector(addButtonTapped))
     }
     
@@ -101,9 +102,7 @@ class ProfileViewController: UIViewController {
     
     private func configureFavoriteMethod() {
         PersistanceManager.isInFavorites(login: user.login) { [weak self] result in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             
             switch result {
             case .success(let isInFavorites):
@@ -128,14 +127,10 @@ class ProfileViewController: UIViewController {
             setRightBarButtonItem()
         }
         
-        guard let isInFavorites = isInFavorites else {
-            return
-        }
+        guard let isInFavorites = isInFavorites else { return }
         
         PersistanceManager.updateWith(favorite: Follower(user: user), actionType: isInFavorites ? .remove : .add) {[weak self] error in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             guard let error = error else {
                 self.isInFavorites!.toggle()
                 return

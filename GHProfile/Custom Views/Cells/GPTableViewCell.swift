@@ -26,6 +26,12 @@ class GPTableViewCell: UITableViewCell {
         avatarImageView.downloadImage(from: user.avatarUrl)
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        avatarImageView.setDefaultImage()
+    }
+    
     private func configure() {
         addSubViews(avatarImageView, usernameLabel)
         

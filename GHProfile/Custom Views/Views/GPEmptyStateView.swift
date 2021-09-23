@@ -9,8 +9,8 @@ import UIKit
 
 class GPEmptyStateView: UIView {
     
-    let messageLabel = GPTitleLabel(textAlignment: .center, fontSize: 28)
-    let logoImageView = UIImageView()
+    private let messageLabel = GPTitleLabel(textAlignment: .center, fontSize: 28)
+    private let logoImageView = UIImageView()
     
     init(message: String) {
         super.init(frame: .zero)
@@ -34,10 +34,10 @@ class GPEmptyStateView: UIView {
         logoImageView.image = Images.emptyStateLogo
         
         NSLayoutConstraint.activate([
-            logoImageView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1.3),
-            logoImageView.heightAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1.3),
-            logoImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 200),
-            logoImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: DeviceTypes.isiPhoneSE || DeviceTypes.isiPhone8Zoomed ? 80 : 40)
+            logoImageView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1.3),
+            logoImageView.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 1.3),
+            logoImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 200),
+            logoImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: DeviceTypes.isiPhoneSE || DeviceTypes.isiPhone8Zoomed ? 80 : 40)
         ])
     }
     
@@ -46,9 +46,9 @@ class GPEmptyStateView: UIView {
         messageLabel.textColor = .secondaryLabel
         
         NSLayoutConstraint.activate([
-            messageLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: DeviceTypes.isiPhoneSE || DeviceTypes.isiPhone8Zoomed ? -80 : -150),
-            messageLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 40),
-            messageLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -40),
+            messageLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: DeviceTypes.isiPhoneSE || DeviceTypes.isiPhone8Zoomed ? -80 : -150),
+            messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 40),
+            messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
             messageLabel.heightAnchor.constraint(equalToConstant: 200)
         ])
     }
