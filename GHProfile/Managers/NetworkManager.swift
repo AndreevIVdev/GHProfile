@@ -93,7 +93,9 @@ class NetworkManager {
         let cacheKey = NSString(string: urlString)
         
         if let image = cache.object(forKey: cacheKey) {
-            completed(image)
+            DispatchQueue.main.async {
+                completed(image)
+            }
             return
         }
         
@@ -111,8 +113,10 @@ class NetworkManager {
                 completed(nil)
                 return
             }
-            self.cache.setObject(image, forKey: cacheKey)
-            completed(image)
+            DispatchQueue.main.async {
+                self.cache.setObject(image, forKey: cacheKey)
+                completed(image)
+            }
         }.resume()
     }
 }

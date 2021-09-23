@@ -38,7 +38,6 @@ class SearchViewController: GPDataLoadingViewController {
     private func configureViewController() {
         view.backgroundColor = .systemBackground
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationController?.navigationBar.tintColor = .darkGreen
     }
     
     private func configureLogoImageView() {

@@ -64,8 +64,7 @@ class ProfileViewController: UIViewController {
 
         let itemViews = [headerView, itemViewOne, itemViewTwo, dateLabel]
         for itemView in itemViews {
-            contentView.addSubview(itemView)
-            itemView.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubViews(itemView)
             NSLayoutConstraint.activate([
                 itemView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
                 itemView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding)

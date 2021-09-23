@@ -9,8 +9,8 @@ import UIKit
 
 enum Cells {
     
-    static let GPTableViewCellReuseID = "GPTableViewCellReuseID"
-    static let GPCollectionViewCellReuseID = "GPCollectionViewCellReuseID"
+    static let GPTableViewCellReuseID = String(describing: GPTableViewCell.self)
+    static let GPCollectionViewCellReuseID = String(describing: GPCollectionViewCell.self)
 }
 
 enum Images {

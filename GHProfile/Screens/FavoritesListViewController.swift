@@ -18,26 +18,32 @@ class FavoritesListViewController: GPDataLoadingViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.addSubViews(tableView, emptyStateView)
         configureViewController()
         configureEmptyStateView()
         configureTableView()
+        getFavorites()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        navigationController?.navigationBar.prefersLargeTitles = true
         getFavorites()
     }
     
     private func configureViewController() {
         view.backgroundColor = .systemBackground
         title = "Favorites"
-        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     private func configureTableView() {
-        tableView.pinToEdges(of: view)
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        ])
         tableView.rowHeight = 80
         tableView.delegate = self
         tableView.dataSource = self
@@ -71,7 +77,6 @@ class FavoritesListViewController: GPDataLoadingViewController {
                     }
                 }
                 
-                break
             case .failure(let error):
                 self.presentGPAlertOnMainTread(title: "Something went wrong", message: error.rawValue, buttonTitle: "Ok")
             }
