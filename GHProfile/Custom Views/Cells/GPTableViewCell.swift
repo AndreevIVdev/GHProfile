@@ -11,6 +11,7 @@ class GPTableViewCell: UITableViewCell {
     
     let avatarImageView = GPAvatarImageView(frame: .zero)
     let usernameLabel = GPTitleLabel(textAlignment: .left, fontSize: 26)
+    var id: UUID!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -23,7 +24,15 @@ class GPTableViewCell: UITableViewCell {
     
     func set(user: Follower) {
         usernameLabel.text = user.login
-        avatarImageView.downloadImage(from: user.avatarUrl)
+        NetworkManager.shared.downloadImage(from: user.avatarUrl) { [weak self, id] image in
+            guard let self = self,
+                  let image = image,
+                  self.id == id
+            else { return }
+            DispatchQueue.main.async {
+                self.avatarImageView.image = image
+            }
+        }
     }
     
     override func prepareForReuse() {

@@ -93,9 +93,7 @@ class NetworkManager {
         let cacheKey = NSString(string: urlString)
         
         if let image = cache.object(forKey: cacheKey) {
-            DispatchQueue.main.async {
-                completed(image)
-            }
+            completed(image)
             return
         }
         
@@ -103,9 +101,8 @@ class NetworkManager {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let self = self,
-                  error == nil,
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard error == nil,
                   let response = response as? HTTPURLResponse, response.statusCode == 200,
                   let data = data,
                   let image = UIImage(data: data)
@@ -113,10 +110,8 @@ class NetworkManager {
                 completed(nil)
                 return
             }
-            DispatchQueue.main.async {
-                self.cache.setObject(image, forKey: cacheKey)
-                completed(image)
-            }
+            self.cache.setObject(image, forKey: cacheKey)
+            completed(image)
         }.resume()
     }
 }
