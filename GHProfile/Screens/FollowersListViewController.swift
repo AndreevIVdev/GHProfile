@@ -53,7 +53,7 @@ class FollowersListViewController: GPDataLoadingViewController {
         showLoadingView()
         isLoadingMoreFollowers = true
         
-        NetworkManager.shared.getFollowers(for: username, page: page) { [weak self] result in
+        NetworkManager.shared.fetchFollowers(for: username, page: page) { [weak self] result in
             guard let self = self else { return }
             self.dismissLoadingView()
             switch result {
@@ -141,7 +141,7 @@ extension FollowersListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let follower = dataSource.itemIdentifier(for: indexPath) else { return }
         showLoadingView()
-        NetworkManager.shared.getUser(for: follower.login) { [weak self] result in
+        NetworkManager.shared.fetchUser(for: follower.login) { [weak self] result in
             guard let self = self else { return }
             self.dismissLoadingView()
             switch result {

@@ -24,7 +24,7 @@ class GPCollectionViewCell: UICollectionViewCell {
     
     func set(follower: Follower) {
         usernameLabel.text = follower.login
-        NetworkManager.shared.downloadImage(from: follower.avatarUrl) { [weak self, id] image in
+        NetworkManager.shared.fetchImage(from: follower.avatarUrl) { [weak self, id] image in
             guard let self = self,
                   let image = image,
                   self.id == id

@@ -17,7 +17,7 @@ class NetworkManager {
     
     private init() {}
     
-    func getFollowers(for username: String, page: Int, completed: @escaping (Result<[Follower], GPError>) -> Void) {
+    func fetchFollowers(for username: String, page: Int, completed: @escaping (Result<[Follower], GPError>) -> Void) {
         let endpoint = baseURL + "\(username)/followers?per_page=100&page=\(page)"
         
         guard let url = URL(string: endpoint) else {
@@ -53,7 +53,7 @@ class NetworkManager {
         }.resume()
     }
     
-    func getUser(for username: String, completed: @escaping (Result<User, GPError>) -> Void) {
+    func fetchUser(for username: String, completed: @escaping (Result<User, GPError>) -> Void) {
         let endpoint = baseURL + "\(username)"
         guard let url = URL(string: endpoint) else {
             completed(.failure(.invalidUsername))
@@ -89,7 +89,7 @@ class NetworkManager {
         }.resume()
     }
     
-    func downloadImage(from urlString: String, completed: @escaping (UIImage?) -> Void) {
+    func fetchImage(from urlString: String, completed: @escaping (UIImage?) -> Void) {
         let cacheKey = NSString(string: urlString)
         
         if let image = cache.object(forKey: cacheKey) {

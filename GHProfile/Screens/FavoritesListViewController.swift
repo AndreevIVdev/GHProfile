@@ -170,7 +170,7 @@ extension FavoritesListViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         showLoadingView()
-        NetworkManager.shared.getUser(for: favorites[indexPath.row].login) { [weak self] result in
+        NetworkManager.shared.fetchUser(for: favorites[indexPath.row].login) { [weak self] result in
             guard let self = self else { return }
             
             self.dismissLoadingView()

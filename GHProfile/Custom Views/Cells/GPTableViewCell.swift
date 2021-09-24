@@ -24,7 +24,7 @@ class GPTableViewCell: UITableViewCell {
     
     func set(user: Follower) {
         usernameLabel.text = user.login
-        NetworkManager.shared.downloadImage(from: user.avatarUrl) { [weak self, id] image in
+        NetworkManager.shared.fetchImage(from: user.avatarUrl) { [weak self, id] image in
             guard let self = self,
                   let image = image,
                   self.id == id

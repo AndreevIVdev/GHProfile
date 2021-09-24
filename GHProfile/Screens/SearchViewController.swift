@@ -87,7 +87,7 @@ class SearchViewController: GPDataLoadingViewController {
         }
         usernameTextField.resignFirstResponder()
         showLoadingView()
-        NetworkManager.shared.getUser(for: usernameTextField.text!) { [weak self] result in
+        NetworkManager.shared.fetchUser(for: usernameTextField.text!) { [weak self] result in
             guard let self = self else {
                 return
             }
