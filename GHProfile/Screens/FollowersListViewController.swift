@@ -101,6 +101,7 @@ class FollowersListViewController: GPDataLoadingViewController {
     private func configureDataSource() {
         dataSource = UICollectionViewDiffableDataSource<Section, Follower>(collectionView: collectionView, cellProvider: { collectionView, indexPath, follower in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Cells.GPCollectionViewCellReuseID, for: indexPath) as! GPCollectionViewCell
+            cell.id = UUID()
             cell.set(follower: follower)
             return cell
         })

@@ -11,6 +11,7 @@ class GPCollectionViewCell: UICollectionViewCell {
     
     let avatarImageView = GPAvatarImageView(frame: .zero)
     let usernameLabel = GPTitleLabel(textAlignment: .center, fontSize: 16)
+    var id: UUID!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,7 +24,19 @@ class GPCollectionViewCell: UICollectionViewCell {
     
     func set(follower: Follower) {
         usernameLabel.text = follower.login
-        avatarImageView.downloadImage(from: follower.avatarUrl)
+        NetworkManager.shared.downloadImage(from: follower.avatarUrl) { [weak self, id] image in
+            guard let self = self,
+                  let image = image,
+                  self.id == id
+            else { return }
+            DispatchQueue.main.async {
+                self.avatarImageView.image = image
+            }
+        }
+    }
+    
+    override func prepareForReuse() {
+        avatarImageView.setDefaultImage()
     }
     
     private func configure() {
