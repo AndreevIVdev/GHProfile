@@ -16,7 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         UINavigationBar.appearance().tintColor = .systemGreen
-        UINavigationBar.appearance().backgroundColor = .systemBackground
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        UINavigationBar.appearance().shadowImage = UIImage()
         UITabBar.appearance().tintColor = .systemGreen
         UITabBar.appearance().backgroundColor = .systemBackground
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
